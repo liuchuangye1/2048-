@@ -104,6 +104,18 @@
             border-radius: 5px;
             cursor: pointer;
             margin-top: 10px;
+            position: relative;
+        }
+
+        #shuffle-chance-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: red;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 12px;
         }
 
         #ad-modal {
@@ -136,7 +148,10 @@
         </div>
     </div>
     <div id="game-board"></div>
-    <button id="shuffle-button" onclick="tryShuffleBoard()">重新随机调整方格位置</button>
+    <button id="shuffle-button" onclick="tryShuffleBoard()">
+        重新随机调整方格位置
+        <span id="shuffle-chance-badge">3</span>
+    </button>
     <div id="game-rules">
         <p>游戏规则：使用键盘方向键（上、下、左、右）控制卡片移动，相同的卡片会合并成一个数值更大的卡片，目标是合并出数值为 2048 的卡片。每天有 3 次免费重新随机调整方格位置的机会，超过三次后，需观看广告获取额外机会。</p>
     </div>
@@ -159,6 +174,7 @@
         const highScoreElement = document.getElementById('high-score');
         const shuffleButton = document.getElementById('shuffle-button');
         const adModal = document.getElementById('ad-modal');
+        const shuffleChanceBadge = document.getElementById('shuffle-chance-badge');
 
         const images = {
             2: 'https://p9-flow-imagex-sign.byteimg.com/ocean-cloud-tos/image_generation/df099f209335f8b25e1d4ab9ce2867ff_1741677321668230149.png~tplv-a9rns2rl98-image.png?rk3s=25bff839&x-expires=1773213321&x-signature=reNM%2F907NNX7Rc%2BE4FflYbWaRKo%3D',
@@ -194,6 +210,7 @@
         } else {
             shuffleChances = parseInt(localStorage.getItem('shuffleChances')) || 3;
         }
+        shuffleChanceBadge.textContent = shuffleChances;
 
         function createBoard() {
             gameBoard.innerHTML = '';
@@ -381,12 +398,15 @@
                     if (index < allTiles.length) {
                         board[i][j] = allTiles[index];
                         index++;
+                    } else {
+                        board[i][j] = 0;
                     }
                 }
             }
             createBoard();
             shuffleChances--;
             localStorage.setItem('shuffleChances', shuffleChances);
+            shuffleChanceBadge.textContent = shuffleChances;
         }
 
         function tryShuffleBoard() {
@@ -401,6 +421,7 @@
             adModal.style.display = 'none';
             shuffleChances++;
             localStorage.setItem('shuffleChances', shuffleChances);
+            shuffleChanceBadge.textContent = shuffleChances;
         }
 
         window.addEventListener('keydown', handleKeyPress);
@@ -411,4 +432,4 @@
     </script>
 </body>
 
-</html>  
+</html>    
